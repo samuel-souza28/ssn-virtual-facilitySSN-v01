@@ -2,143 +2,1650 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SSN Virtual Facility 0.1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111d">
+<meta name="description" content="SSN Virtual Facility 2.0 — Centro de comando virtual do Sistema Solar Nordeste.">
+<title>SSN Virtual Facility 2.0</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101720;color:#edf5fc;font-family:Arial,sans-serif}
-header{padding:18px;background:#172432;border-bottom:1px solid #405365}
-h1{font-size:22px;margin:0 0 8px}
-p{line-height:1.5}
-.sub{color:#b5c8d8;font-size:13px;margin:0}
-.badge{display:inline-block;background:#57451c;color:#ffe4a3;padding:7px;margin-top:12px;border-radius:5px;font-size:11px}
-main{max-width:1000px;margin:auto;padding:14px}
-h2{font-size:17px;margin:22px 0 12px}
-#scene{width:100%;height:310px;display:block;background:#1a2b38;border:1px solid #435969;border-radius:10px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-button{background:#1c2d3c;color:#fff;border:1px solid #496174;padding:12px;border-radius:8px;text-align:left;cursor:pointer}
-button.active{border-color:#82d7ff;background:#2a4558}
-button strong{display:block;color:#8cddff;margin-bottom:5px;font-size:12px}
-#panel{margin-top:14px;background:#172432;border:1px solid #405365;border-radius:10px;padding:14px}
-#title{font-size:18px;margin:0}
-#desc{color:#bdcddb;font-size:13px}
-.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.metric{background:#0f1b25;padding:12px;border-radius:6px;overflow-wrap:anywhere}
-.metric small{display:block;color:#9eb4c6;margin-bottom:7px}
-.metric strong{font-size:15px}
-.actions{display:flex;gap:8px;margin-top:12px}
-.actions button{flex:1;text-align:center}
-#events{font-size:12px;color:#c5d4df;line-height:1.8;overflow-wrap:anywhere}
-footer{text-align:center;padding:22px;color:#91a7b8;font-size:11px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}#scene{height:430px}}
+:root {
+  --bg: #07111d;
+  --panel: #0c1b2a;
+  --panel2: #102538;
+  --line: #244257;
+  --cyan: #42e8ff;
+  --blue: #4b91ff;
+  --green: #5fffb0;
+  --yellow: #ffd166;
+  --red: #ff637c;
+  --text: #e8f5ff;
+  --muted: #91aabd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, #14334b 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 22px;
+  background: rgba(5, 15, 25, .92);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--cyan);
+  font-weight: 900;
+  box-shadow: 0 0 20px #42e8ff20;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+
+.brand p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+
+.demo-banner {
+  margin: 16px 22px 0;
+  padding: 11px 14px;
+  background: #352b173d;
+  border: 1px solid #8e713b;
+  border-radius: 10px;
+  color: #ffe3a1;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 225px minmax(0, 1fr);
+  gap: 20px;
+  padding: 22px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.sidebar {
+  background: rgba(12, 27, 42, .9);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 15px;
+  align-self: start;
+  position: sticky;
+  top: 95px;
+}
+
+.side-title {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin: 6px 9px 12px;
+}
+
+.nav-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  margin-bottom: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #b6ccdc;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  transition: .2s;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  color: var(--cyan);
+  background: #173247;
+  border-color: #2d5b70;
+}
+
+.nav-icon {
+  font-size: 17px;
+  width: 23px;
+  text-align: center;
+}
+
+.sidebar-note {
+  margin-top: 18px;
+  padding: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+main {
+  min-width: 0;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.page-head h2 {
+  margin: 0;
+  font-size: clamp(21px, 3vw, 30px);
+}
+
+.page-head p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.eyebrow {
+  color: var(--cyan);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.btn {
+  background: #153449;
+  border: 1px solid #31627b;
+  color: var(--cyan);
+  padding: 10px 13px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.btn:hover {
+  background: #20465e;
+}
+
+.btn-danger {
+  border-color: #873c4b;
+  color: #ff9aaa;
+  background: #371c29;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: linear-gradient(145deg, #102437, #0a1826);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 17px;
+  min-width: 0;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.metric-value {
+  font-size: 27px;
+  font-weight: 750;
+  margin: 13px 0 8px;
+  overflow-wrap: anywhere;
+}
+
+.metric-value small {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.metric-foot {
+  color: var(--cyan);
+  font-size: 10px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 15px;
+  font-size: 14px;
+}
+
+.section-title span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.facility {
+  border: 1px solid #2c4a60;
+  border-radius: 12px;
+  background:
+    linear-gradient(#1b3b4a28 1px, transparent 1px),
+    linear-gradient(90deg, #1b3b4a28 1px, transparent 1px),
+    #081522;
+  background-size: 22px 22px;
+  padding: 16px;
+  min-height: 300px;
+}
+
+.facility-top {
+  border: 1px solid #37637a;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  background: #102a3d;
+  margin-bottom: 13px;
+}
+
+.facility-top strong {
+  display: block;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+.facility-top small {
+  display: block;
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.zone-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.zone {
+  min-height: 83px;
+  background: #102336;
+  border: 1px solid #29485d;
+  border-radius: 9px;
+  padding: 12px;
+  text-align: left;
+  color: var(--text);
+  transition: .2s;
+}
+
+.zone:hover {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.zone .zone-icon {
+  font-size: 19px;
+}
+
+.zone strong {
+  display: block;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.zone small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zone.selected {
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 18px #42e8ff10;
+}
+
+.bar-list {
+  display: grid;
+  gap: 17px;
+}
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.bar-label span:last-child {
+  color: var(--cyan);
+}
+
+.bar {
+  height: 7px;
+  background: #1b3042;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 20px;
+  transition: width .3s;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.control {
+  border: 1px solid #27465b;
+  background: #0b1b2a;
+  padding: 13px;
+  border-radius: 10px;
+}
+
+.control label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 11px;
+}
+
+.control output {
+  color: var(--cyan);
+  display: block;
+  margin-bottom: 9px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--cyan);
+}
+
+.control small {
+  color: var(--muted);
+  font-size: 10px;
+  display: block;
+  margin-top: 7px;
+}
+
+.event-list {
+  display: grid;
+  gap: 9px;
+}
+
+.event {
+  border-left: 3px solid var(--cyan);
+  background: #102437;
+  padding: 11px 12px;
+  border-radius: 0 8px 8px 0;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.event.warning {
+  border-left-color: var(--yellow);
+}
+
+.event.danger {
+  border-left-color: var(--red);
+}
+
+.event time {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.shutter {
+  border: 1px solid #31536a;
+  border-radius: 12px;
+  background: #081522;
+  padding: 20px;
+  text-align: center;
+}
+
+.shutter-symbol {
+  width: 100px;
+  height: 100px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 35px;
+  margin: 0 auto 15px;
+  box-shadow: 0 0 25px #42e8ff17;
+}
+
+.shutter-state {
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.module-description {
+  line-height: 1.8;
+  color: #bfd2df;
+  font-size: 13px;
+}
+
+.module-stat {
+  border-top: 1px solid var(--line);
+  margin-top: 15px;
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.module-stat span:last-child {
+  color: var(--cyan);
+  text-align: right;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 180px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  background: #183247;
+  color: var(--cyan);
+  margin-bottom: 10px;
+}
+
+.tag.warning {
+  color: var(--yellow);
+  background: #49391d;
+}
+
+.tag.danger {
+  color: #ff9aaa;
+  background: #421d2a;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding: 17px 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #15364a;
+  color: var(--text);
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  z-index: 100;
+  width: max-content;
+  max-width: 90%;
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  header {
+    padding: 13px;
+  }
+
+  .brand h1 {
+    font-size: 13px;
+  }
+
+  .brand p {
+    font-size: 10px;
+  }
+
+  .status {
+    font-size: 10px;
+  }
+
+  .demo-banner {
+    margin: 12px 12px 0;
+  }
+
+  .layout {
+    display: block;
+    padding: 12px;
+  }
+
+  .sidebar {
+    position: static;
+    padding: 10px;
+    margin-bottom: 18px;
+  }
+
+  .side-title,
+  .sidebar-note {
+    display: none;
+  }
+
+  .nav-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .nav-btn {
+    margin: 0;
+    padding: 10px 5px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    font-size: 9px;
+  }
+
+  .nav-icon {
+    font-size: 18px;
+  }
+
+  .page-head {
+    flex-direction: column;
+  }
+
+  .grid {
+    gap: 9px;
+  }
+
+  .card {
+    padding: 13px;
+  }
+
+  .metric-value {
+    font-size: 22px;
+  }
+
+  .facility {
+    padding: 10px;
+  }
+
+  .zone {
+    padding: 9px;
+    min-height: 80px;
+  }
+
+  .control-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>☀️ SSN Virtual Facility</h1>
-<p class="sub">Sistema Solar Nordeste | Versão 0.1</p>
-<span class="badge">SIMULAÇÃO VIRTUAL — SEM CONTROLE FÍSICO</span>
+  <div class="brand">
+    <div class="logo">SSN</div>
+    <div>
+      <h1>VIRTUAL FACILITY <span style="color:var(--cyan)">2.0</span></h1>
+      <p>SISTEMA SOLAR NORDESTE · HÍBRIDO</p>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="dot"></span>
+    SIMULAÇÃO ATIVA
+  </div>
 </header>
-<main>
-<h2>🏭 Galpão industrial virtual</h2>
-<canvas id="scene"></canvas>
-<p class="sub">Representação conceitual. Selecione uma zona para consultar seus parâmetros.</p>
 
-<h2>📍 Subsistemas SSN</h2>
-<div class="grid" id="zones"></div>
-
-<section id="panel">
-<h3 id="title">SSN-SOLAR</h3>
-<p id="desc"></p>
-<div class="metrics" id="metrics"></div>
-<div class="actions">
-<button id="run">▶ Simular cenário</button>
-<button id="record">＋ Registrar evento</button>
+<div class="demo-banner">
+  ⚠️ <strong>AMBIENTE VIRTUAL:</strong>
+  os valores, sensores, alertas e respostas apresentados nesta interface são
+  simulados. Não há conexão com sensores ou equipamentos físicos.
 </div>
-</section>
 
-<h2>📋 Histórico de eventos</h2>
-<div id="events">Nenhum evento registrado nesta sessão.</div>
-</main>
-<footer>
-SSN Virtual Facility 0.1<br>
-Dados fictícios para experimentação. Não controla equipamentos reais e não substitui sistemas certificados de segurança.
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="side-title">NAVEGAÇÃO DO SISTEMA</div>
+
+    <nav class="nav-list" aria-label="Módulos SSN">
+      <button class="nav-btn active" data-view="overview">
+        <span class="nav-icon">🎛️</span> Centro de comando
+      </button>
+
+      <button class="nav-btn" data-view="solar">
+        <span class="nav-icon">☀️</span> SSN-SOLAR
+      </button>
+
+      <button class="nav-btn" data-view="optical">
+        <span class="nav-icon">🔭</span> SSN-OPTICAL
+      </button>
+
+      <button class="nav-btn" data-view="environment">
+        <span class="nav-icon">🌿</span> SSN-ENVIRONMENT
+      </button>
+
+      <button class="nav-btn" data-view="weather">
+        <span class="nav-icon">🌦️</span> SSN-WEATHER
+      </button>
+
+      <button class="nav-btn" data-view="safe">
+        <span class="nav-icon">🛡️</span> SSN-SAFE
+      </button>
+    </nav>
+
+    <div class="sidebar-note">
+      <strong style="color:var(--cyan)">SSN CONTROL</strong><br>
+      Central virtual de supervisão e parâmetros.<br><br>
+      Versão 2.0<br>
+      Perfil: Híbrido SSN
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- CENTRO DE COMANDO -->
+    <section class="view active" id="view-overview">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">SSN / CONTROL CENTER</div>
+          <h2>Centro de comando</h2>
+          <p>Visão geral da instalação virtual e de seus parâmetros simulados.</p>
+        </div>
+
+        <button class="btn" id="resetBtn">↻ Reiniciar simulação</button>
+      </div>
+
+      <div class="grid">
+
+        <article class="card">
+          <div class="metric-label">Luminosidade virtual</div>
+          <div class="metric-value"><span id="mLight">720</span><small> lx</small></div>
+          <div class="metric-foot">SSN-SOLAR</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Temperatura virtual</div>
+          <div class="metric-value"><span id="mTemp">28.0</span><small> °C</small></div>
+          <div class="metric-foot">SSN-ENVIRONMENT</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Transmissão óptica</div>
+          <div class="metric-value"><span id="mTransmission">82</span><small> %</small></div>
+          <div class="metric-foot">SSN-OPTICAL</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Umidade virtual</div>
+          <div class="metric-value"><span id="mHumidity">65</span><small> %</small></div>
+          <div class="metric-foot">SSN-ENVIRONMENT</div>
+        </article>
+
+      </div>
+
+      <div class="two-col">
+
+        <article class="card">
+          <h3 class="section-title">
+            Mapa da instalação
+            <span>SELECIONE UMA ZONA</span>
+          </h3>
+
+          <div class="facility">
+
+            <div class="facility-top">
+              <strong>SSN VIRTUAL FACILITY</strong>
+              <small>PLANTA ESQUEMÁTICA · NÃO REPRESENTA DIMENSÕES REAIS</small>
+            </div>
+
+            <div class="zone-grid">
+
+              <button class="zone" data-go="solar">
+                <span class="zone-icon">☀️</span>
+                <strong>SSN-SOLAR</strong>
+                <small>Entrada de luz virtual</small>
+              </button>
+
+              <button class="zone" data-go="optical">
+                <span class="zone-icon">🔭</span>
+                <strong>SSN-OPTICAL</strong>
+                <small>Fluxo óptico virtual</small>
+              </button>
+
+              <button class="zone" data-go="environment">
+                <span class="zone-icon">🌿</span>
+                <strong>SSN-ENVIRONMENT</strong>
+                <small>Condições ambientais</small>
+              </button>
+
+              <button class="zone" data-go="weather">
+                <span class="zone-icon">🌦️</span>
+                <strong>SSN-WEATHER</strong>
+                <small>Monitoramento meteorológico</small>
+              </button>
+
+              <button class="zone" data-go="safe">
+                <span class="zone-icon">🛡️</span>
+                <strong>SSN-SAFE</strong>
+                <small>Segurança simulada</small>
+              </button>
+
+              <button class="zone" data-go="overview">
+                <span class="zone-icon">🎛️</span>
+                <strong>SSN-CONTROL</strong>
+                <small>Supervisão central</small>
+              </button>
+
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="section-title">
+            Parâmetros do sistema
+            <span>SIMULADOS</span>
+          </h3>
+
+          <div class="bar-list">
+
+            <div>
+              <div class="bar-label">
+                <span>Luminosidade</span>
+                <span id="barLightText">72%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="barLight"></div></div>
+            </div>
+
+            <div>
+              <div class="bar-label">
+                <span>Transmissão óptica</span>
+                <span id="barTransmissionText">82%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="barTransmission"></div></div>
+            </div>
+
+            <div>
+              <div class="bar-label">
+                <span>Temperatura relativa</span>
+                <span id="barTempText">28 °C</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="barTemp"></div></div>
+            </div>
+
+            <div>
+              <div class="bar-label">
+                <span>Umidade</span>
+                <span id="barHumidityText">65%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="barHumidity"></div></div>
+            </div>
+
+          </div>
+
+          <p class="muted" style="margin-top:24px">
+            Ajuste os parâmetros nos módulos individuais.
+            Os indicadores são atualizados localmente pelo navegador.
+          </p>
+        </article>
+
+      </div>
+
+      <div class="two-col">
+
+        <article class="card">
+          <h3 class="section-title">
+            Evolução dos parâmetros
+            <span>HISTÓRICO LOCAL</span>
+          </h3>
+          <canvas id="chart" aria-label="Gráfico histórico de luminosidade e transmissão óptica"></canvas>
+          <p class="muted">Gráfico ilustrativo das últimas amostras simuladas.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="section-title">
+            Registro de eventos
+            <span id="eventCount">0 EVENTOS</span>
+          </h3>
+          <div class="event-list" id="events"></div>
+          <button class="btn" id="clearEvents" style="margin-top:12px">
+            Limpar histórico
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SSN SOLAR -->
+    <section class="view" id="view-solar">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">MODULE 01 / SOLAR</div>
+          <h2>SSN-SOLAR</h2>
+          <p>Representação virtual da intensidade de luz na entrada do sistema.</p>
+        </div>
+        <span class="tag">SIMULADO</span>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="metric-label">Luminosidade</div>
+          <div class="metric-value"><span id="solarValue">720</span><small> lx</small></div>
+          <div class="metric-foot">VALOR VIRTUAL</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Intensidade relativa</div>
+          <div class="metric-value"><span id="solarPercent">72</span><small> %</small></div>
+          <div class="metric-foot">ESCALA ILUSTRATIVA</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3 class="section-title">Controle de luminosidade</h3>
+        <div class="control">
+          <label for="light">Luminosidade virtual</label>
+          <output id="lightOut">720 lx</output>
+          <input id="light" type="range" min="0" max="1000" value="720">
+          <small>Arraste para modificar o valor da simulação.</small>
+        </div>
+
+        <p class="module-description">
+          Este módulo representa a entrada luminosa de uma instalação conceitual.
+          Lux é uma unidade de iluminância; este controle não mede irradiância
+          solar nem determina, sozinho, a segurança da exposição à radiação UV.
+        </p>
+      </article>
+
+    </section>
+
+    <!-- SSN OPTICAL -->
+    <section class="view" id="view-optical">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">MODULE 02 / OPTICAL</div>
+          <h2>SSN-OPTICAL</h2>
+          <p>Controle virtual da transmissão óptica.</p>
+        </div>
+        <span class="tag">SIMULADO</span>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="metric-label">Transmissão óptica</div>
+          <div class="metric-value"><span id="opticalValue">82</span><small> %</small></div>
+          <div class="metric-foot">PARÂMETRO CONFIGURÁVEL</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Atenuação representada</div>
+          <div class="metric-value"><span id="attenuationValue">18</span><small> %</small></div>
+          <div class="metric-foot">100% − TRANSMISSÃO</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3 class="section-title">Ajuste de transmissão</h3>
+        <div class="control">
+          <label for="transmission">Transmissão óptica virtual</label>
+          <output id="transmissionOut">82%</output>
+          <input id="transmission" type="range" min="0" max="100" value="82">
+          <small>Este controle não atua sobre filtros ou componentes físicos.</small>
+        </div>
+
+        <p class="module-description">
+          A transmissão indica a porcentagem de luz que um componente hipotético
+          deixaria passar no modelo. Não representa uma medição de laboratório
+          nem a eficácia de um filtro UV real.
+        </p>
+      </article>
+
+    </section>
+
+    <!-- ENVIRONMENT -->
+    <section class="view" id="view-environment">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">MODULE 03 / ENVIRONMENT</div>
+          <h2>SSN-ENVIRONMENT</h2>
+          <p>Representação das condições ambientais da instalação virtual.</p>
+        </div>
+        <span class="tag">SIMULADO</span>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="metric-label">Temperatura</div>
+          <div class="metric-value"><span id="envTemp">28.0</span><small> °C</small></div>
+          <div class="metric-foot">VALOR VIRTUAL</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Umidade relativa</div>
+          <div class="metric-value"><span id="envHumidity">65</span><small> %</small></div>
+          <div class="metric-foot">VALOR VIRTUAL</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3 class="section-title">Parâmetros ambientais</h3>
+
+        <div class="control-grid">
+          <div class="control">
+            <label for="temperature">Temperatura virtual</label>
+            <output id="temperatureOut">28.0 °C</output>
+            <input id="temperature" type="range" min="0" max="60" value="28" step="0.5">
+            <small>Faixa ilustrativa: 0 a 60 °C.</small>
+          </div>
+
+          <div class="control">
+            <label for="humidity">Umidade relativa virtual</label>
+            <output id="humidityOut">65%</output>
+            <input id="humidity" type="range" min="0" max="100" value="65">
+            <small>Faixa ilustrativa: 0 a 100%.</small>
+          </div>
+        </div>
+
+        <p class="module-description">
+          Os parâmetros podem ser utilizados para testar a interface e futuras
+          regras de automação. Eles não vêm de sensores ambientais reais.
+        </p>
+      </article>
+
+    </section>
+
+    <!-- WEATHER -->
+    <section class="view" id="view-weather">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">MODULE 04 / WEATHER</div>
+          <h2>SSN-WEATHER</h2>
+          <p>Painel preparado para uma futura integração meteorológica.</p>
+        </div>
+        <span class="tag warning">INTEGRAÇÃO PENDENTE</span>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="metric-label">Temperatura de demonstração</div>
+          <div class="metric-value"><span id="weatherTemp">28.0</span><small> °C</small></div>
+          <div class="metric-foot">DADO SIMULADO</div>
+        </article>
+
+        <article class="card">
+          <div class="metric-label">Umidade de demonstração</div>
+          <div class="metric-value"><span id="weatherHumidity">65</span><small> %</small></div>
+          <div class="metric-foot">DADO SIMULADO</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3 class="section-title">Estado da integração</h3>
+        <span class="tag warning">SEM FONTE METEOROLÓGICA CONECTADA</span>
+
+        <p class="module-description">
+          Este painel ainda não consulta uma API meteorológica.
+          Os números exibidos são valores de demonstração compartilhados
+          com a simulação ambiental.
+        </p>
+
+        <div class="module-stat">
+          <span>Origem dos dados</span>
+          <span>Simulação local</span>
+        </div>
+
+        <div class="module-stat">
+          <span>Localização meteorológica</span>
+          <span>Não configurada</span>
+        </div>
+
+        <div class="module-stat">
+          <span>Atualização externa</span>
+          <span>Não disponível</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- SSN SAFE -->
+    <section class="view" id="view-safe">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">MODULE 05 / SAFETY</div>
+          <h2>SSN-SAFE</h2>
+          <p>Simulação de alertas e estados de um obturador virtual.</p>
+        </div>
+        <span class="tag warning">NÃO É SEGURANÇA FÍSICA</span>
+      </div>
+
+      <div class="two-col">
+
+        <article class="card">
+          <h3 class="section-title">Obturador virtual</h3>
+
+          <div class="shutter">
+            <div class="shutter-symbol" id="shutterSymbol">◉</div>
+            <div class="shutter-state" id="shutterState">ABERTO</div>
+            <p class="muted" id="shutterDescription">
+              Estado representado na simulação.
+            </p>
+
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+              <button class="btn" id="openShutter">Abrir virtualmente</button>
+              <button class="btn btn-danger" id="closeShutter">Fechar virtualmente</button>
+            </div>
+          </div>
+
+          <p class="module-description">
+            Os botões alteram apenas a representação na tela. Não comandam
+            motores, válvulas, obturadores ou qualquer dispositivo físico.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3 class="section-title">Limites da simulação</h3>
+
+          <div class="control">
+            <label for="lightLimit">Limite ilustrativo de luminosidade</label>
+            <output id="lightLimitOut">850 lx</output>
+            <input id="lightLimit" type="range" min="100" max="1000" value="850">
+          </div>
+
+          <div class="control" style="margin-top:12px">
+            <label for="tempLimit">Limite ilustrativo de temperatura</label>
+            <output id="tempLimitOut">45 °C</output>
+            <input id="tempLimit" type="range" min="20" max="60" value="45">
+          </div>
+
+          <p class="muted" style="margin-top:12px">
+            Estes limites servem apenas para demonstrar a lógica da interface.
+            Não são limites de segurança validados para equipamentos reais.
+          </p>
+        </article>
+
+      </div>
+
+      <article class="card">
+        <h3 class="section-title">Estado dos alertas</h3>
+        <div id="safeStatus" class="event">Inicializando verificação virtual...</div>
+        <p class="muted" style="margin-top:12px">
+          A lógica demonstrativa pode solicitar o fechamento virtual quando
+          um limite configurado for ultrapassado. Isso não constitui proteção
+          física e não deve ser usado para controlar uma instalação real.
+        </p>
+      </article>
+
+    </section>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <strong style="color:var(--cyan)">SSN VIRTUAL FACILITY 2.0</strong><br>
+  Sistema Solar Nordeste · Arquitetura Híbrido SSN<br>
+  Protótipo experimental · Valores simulados · Sem conexão com hardware
 </footer>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
-const zones=[
-{id:"SSN-SOLAR",name:"Captação solar",desc:"Área conceitual de painéis e captação de energia.",m:[["Irradiância","720 W/m²"],["Painéis virtuais","12"],["Produção","Simulada"]]},
-{id:"SSN-OPTICAL",name:"Sistema óptico",desc:"Tubos de luz e componentes ópticos conceituais.",m:[["Luminosidade","68%"],["Filtro UV","Conceitual"],["Obturador","Virtual"]]},
-{id:"SSN-ENVIRONMENT",name:"Ambiente",desc:"Ambiente experimental com parâmetros fictícios.",m:[["Temperatura","27 °C"],["Umidade","55%"],["Estado","Normal simulado"]]},
-{id:"SSN-WEATHER",name:"Meteorologia",desc:"Estação demonstrativa sem conexão com serviços meteorológicos.",m:[["Condição","Simulada"],["Vento","12 km/h fictícios"],["Dados reais","Desconectados"]]},
-{id:"SSN-SAFE",name:"Segurança experimental",desc:"Demonstração de alertas por software, sem proteção física real.",m:[["Alertas","0"],["Intertravamento","Simulado"],["Proteção certificada","Não disponível"]]},
-{id:"SSN-CONTROL",name:"Centro de controle",desc:"Painel conceitual de monitoramento e registro.",m:[["Zonas virtuais","6"],["Integrações","Nenhuma"],["Histórico","Da sessão"]]}
-];
-let selected=0,events=[];
-const el=id=>document.getElementById(id);
-function draw(){
-const c=el("scene"),r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
-c.width=r.width*d;c.height=r.height*d;
-const x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);
-const w=r.width,h=r.height,cx=w/2,cy=h*.46,dx=Math.min(w*.31,155),dy=Math.min(h*.19,68);
-x.clearRect(0,0,w,h);x.fillStyle="#1a2b38";x.fillRect(0,0,w,h);
-function poly(p,color){
-x.beginPath();p.forEach((v,i)=>i?x.lineTo(...v):x.moveTo(...v));
-x.closePath();x.fillStyle=color;x.fill();x.strokeStyle="#7893a5";x.stroke();
+"use strict";
+
+/* =====================================================
+   SSN VIRTUAL FACILITY 2.0
+   Dados demonstrativos. Nenhum hardware é controlado.
+   ===================================================== */
+
+const defaults = {
+  light: 720,
+  transmission: 82,
+  temperature: 28,
+  humidity: 65,
+  lightLimit: 850,
+  tempLimit: 45,
+  shutter: "ABERTO"
+};
+
+const state = { ...defaults };
+const historyData = [];
+const eventsData = [];
+
+let toastTimer = null;
+
+function $(id) {
+  return document.getElementById(id);
 }
-poly([[cx,cy-dy*1.5],[cx+dx,cy-dy*.5],[cx,cy+dy*.5],[cx-dx,cy-dy*.5]],"#354c5b");
-poly([[cx-dx,cy-dy*.5],[cx,cy+dy*.5],[cx,cy+dy*1.45],[cx-dx,cy+dy*.45]],"#263b49");
-poly([[cx,cy+dy*.5],[cx+dx,cy-dy*.5],[cx+dx,cy+dy*.45],[cx,cy+dy*1.45]],"#203441");
-const pos=[[cx-dx*.5,cy-dy*.35],[cx+dx*.5,cy-dy*.35],[cx-dx*.5,cy+dy*.35],[cx+dx*.5,cy+dy*.35],[cx-dx*.5,cy+dy*.95],[cx+dx*.5,cy+dy*.95]];
-const colors=["#347c9b","#5a72a4","#8c7040","#427b65","#a14f4f","#6b638e"];
-pos.forEach((p,i)=>{
-const [a,b]=p,ww=Math.min(w*.25,dx*.72),hh=dy*.43;
-poly([[a-ww/2,b-hh/2],[a,b-hh*.85],[a+ww/2,b-hh/2],[a,b+hh*.05]],i===selected?"#9de3ff":colors[i]);
-poly([[a-ww/2,b-hh/2],[a,b+hh*.05],[a,b+hh*.75],[a-ww/2,b+hh*.15]],colors[i]);
-poly([[a,b+hh*.05],[a+ww/2,b-hh/2],[a+ww/2,b+hh*.15],[a,b+hh*.75]],i===selected?"#4289ad":"#2b414f");
-x.fillStyle="white";x.textAlign="center";x.font="bold 10px Arial";
-x.fillText(zones[i].id.replace("SSN-",""),a,b+4);
+
+function notify(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2600);
+}
+
+function logEvent(message, level = "normal") {
+  const now = new Date();
+
+  eventsData.unshift({
+    message,
+    level,
+    time: now.toLocaleTimeString("pt-BR")
+  });
+
+  if (eventsData.length > 30) {
+    eventsData.pop();
+  }
+
+  renderEvents();
+}
+
+function renderEvents() {
+  const container = $("events");
+
+  if (!eventsData.length) {
+    container.innerHTML =
+      '<div class="event">Nenhum evento registrado.</div>';
+  } else {
+    container.innerHTML = eventsData.slice(0, 7).map(event => {
+      const cssClass =
+        event.level === "danger" ? "danger" :
+        event.level === "warning" ? "warning" : "";
+
+      return `
+        <div class="event ${cssClass}">
+          ${escapeHTML(event.message)}
+          <time>${escapeHTML(event.time)}</time>
+        </div>
+      `;
+    }).join("");
+  }
+
+  $("eventCount").textContent =
+    `${eventsData.length} EVENTO${eventsData.length === 1 ? "" : "S"}`;
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function setBar(id, value) {
+  $(id).style.width =
+    `${Math.max(0, Math.min(100, Number(value)))}%`;
+}
+
+function render() {
+  $("mLight").textContent = state.light;
+  $("mTemp").textContent = state.temperature.toFixed(1);
+  $("mTransmission").textContent = state.transmission;
+  $("mHumidity").textContent = state.humidity;
+
+  $("solarValue").textContent = state.light;
+  $("solarPercent").textContent = Math.round(state.light / 10);
+  $("lightOut").textContent = `${state.light} lx`;
+
+  $("opticalValue").textContent = state.transmission;
+  $("attenuationValue").textContent = 100 - state.transmission;
+  $("transmissionOut").textContent = `${state.transmission}%`;
+
+  $("envTemp").textContent = state.temperature.toFixed(1);
+  $("envHumidity").textContent = state.humidity;
+  $("temperatureOut").textContent = `${state.temperature.toFixed(1)} °C`;
+  $("humidityOut").textContent = `${state.humidity}%`;
+
+  $("weatherTemp").textContent = state.temperature.toFixed(1);
+  $("weatherHumidity").textContent = state.humidity;
+
+  $("lightLimitOut").textContent = `${state.lightLimit} lx`;
+  $("tempLimitOut").textContent = `${state.tempLimit} °C`;
+
+  $("barLightText").textContent = `${Math.round(state.light / 10)}%`;
+  $("barTransmissionText").textContent = `${state.transmission}%`;
+  $("barTempText").textContent = `${state.temperature.toFixed(1)} °C`;
+  $("barHumidityText").textContent = `${state.humidity}%`;
+
+  setBar("barLight", state.light / 10);
+  setBar("barTransmission", state.transmission);
+  setBar("barTemp", state.temperature / 60 * 100);
+  setBar("barHumidity", state.humidity);
+
+  $("light").value = state.light;
+  $("transmission").value = state.transmission;
+  $("temperature").value = state.temperature;
+  $("humidity").value = state.humidity;
+  $("lightLimit").value = state.lightLimit;
+  $("tempLimit").value = state.tempLimit;
+
+  $("shutterState").textContent = state.shutter;
+  $("shutterSymbol").textContent =
+    state.shutter === "FECHADO" ? "⊗" :
+    state.shutter === "EM TRANSIÇÃO" ? "◌" : "◉";
+
+  $("shutterDescription").textContent =
+    state.shutter === "FECHADO"
+      ? "Obturador representado como fechado."
+      : state.shutter === "EM TRANSIÇÃO"
+      ? "Transição virtual em andamento."
+      : "Obturador representado como aberto.";
+
+  checkSafety();
+  drawChart();
+}
+
+function checkSafety() {
+  const alerts = [];
+
+  if (state.light > state.lightLimit) {
+    alerts.push("Luminosidade acima do limite ilustrativo.");
+  }
+
+  if (state.temperature > state.tempLimit) {
+    alerts.push("Temperatura acima do limite ilustrativo.");
+  }
+
+  const status = $("safeStatus");
+
+  if (alerts.length) {
+    status.className = "event danger";
+    status.textContent =
+      "ALERTA VIRTUAL: " + alerts.join(" ");
+
+    if (state.shutter === "ABERTO") {
+      state.shutter = "FECHADO";
+
+      $("shutterState").textContent = "FECHADO";
+      $("shutterSymbol").textContent = "⊗";
+      $("shutterDescription").textContent =
+        "Fechamento representado na simulação.";
+
+      logEvent(
+        "Solicitação automática de fechamento virtual: limite ultrapassado.",
+        "danger"
+      );
+    }
+  } else {
+    status.className = "event";
+    status.textContent =
+      "Parâmetros dentro dos limites ilustrativos configurados.";
+  }
+}
+
+function changeShutter(nextState) {
+  state.shutter = "EM TRANSIÇÃO";
+  render();
+
+  notify("Transição virtual iniciada.");
+
+  setTimeout(() => {
+    state.shutter = nextState;
+    render();
+
+    logEvent(
+      `Obturador virtual alterado para: ${nextState}.`,
+      nextState === "FECHADO" ? "warning" : "normal"
+    );
+
+    notify(`Obturador virtual: ${nextState}.`);
+  }, 450);
+}
+
+function drawChart() {
+  const canvas = $("chart");
+
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width < 10) return;
+
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(180 * dpr);
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.scale(dpr, dpr);
+
+  const width = rect.width;
+  const height = 180;
+
+  ctx.clearRect(0, 0, width, height);
+
+  const left = 32;
+  const right = width - 12;
+  const top = 15;
+  const bottom = height - 25;
+
+  ctx.font = "10px system-ui";
+  ctx.fillStyle = "#91aabd";
+  ctx.strokeStyle = "#244257";
+  ctx.lineWidth = 1;
+
+  for (let i = 0; i <= 4; i++) {
+    const y = top + (bottom - top) * i / 4;
+
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(right, y);
+    ctx.stroke();
+  }
+
+  const points = historyData.slice(-24);
+
+  if (points.length < 2) {
+    ctx.fillStyle = "#91aabd";
+    ctx.fillText("Aguardando amostras...", left + 8, height / 2);
+    return;
+  }
+
+  function plot(key, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    points.forEach((point, index) => {
+      const x = left + (right - left) * index / (points.length - 1);
+      const y = bottom -
+        (bottom - top) * Math.max(0, Math.min(100, point[key])) / 100;
+
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+
+    ctx.stroke();
+  }
+
+  plot("light", "#42e8ff");
+  plot("transmission", "#5fffb0");
+
+  ctx.fillStyle = "#42e8ff";
+  ctx.fillText("— Luz", left, height - 5);
+
+  ctx.fillStyle = "#5fffb0";
+  ctx.fillText("— Transmissão", left + 65, height - 5);
+}
+
+function sampleHistory() {
+  historyData.push({
+    light: state.light / 10,
+    transmission: state.transmission,
+    time: Date.now()
+  });
+
+  if (historyData.length > 60) {
+    historyData.shift();
+  }
+
+  drawChart();
+}
+
+/* Navegação */
+
+function navigate(viewName) {
+  const target = $("view-" + viewName);
+
+  if (!target) return;
+
+  document.querySelectorAll(".view").forEach(view => {
+    view.classList.remove("active");
+  });
+
+  target.classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.view === viewName
+    );
+  });
+
+  if (viewName === "overview") {
+    setTimeout(drawChart, 20);
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("[data-view]").forEach(button => {
+  button.addEventListener("click", () => {
+    navigate(button.dataset.view);
+  });
 });
-x.fillStyle="#c0d4e1";x.textAlign="left";x.font="11px Arial";x.fillText("GALPÃO CONCEITUAL",10,18);
-}
-function renderZones(){
-el("zones").innerHTML=zones.map((z,i)=>`<button class="${i===selected?"active":""}" data-i="${i}"><strong>${z.id}</strong>${z.name}</button>`).join("");
-document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>select(+b.dataset.i));
-}
-function select(i){
-selected=i;const z=zones[i];
-el("title").textContent=z.id+" — "+z.name;
-el("desc").textContent=z.desc;
-el("metrics").innerHTML=z.m.map(v=>`<div class="metric"><small>${v[0]}</small><strong>${v[1]}</strong></div>`).join("");
-renderZones();draw();
-}
-function log(msg){
-events.unshift(new Date().toLocaleTimeString("pt-BR")+" — "+msg);
-el("events").innerHTML=events.slice(0,20).map(v=>"• "+v).join("<br>");
-}
-el("record").onclick=()=>log("Inspeção manual: "+zones[selected].id);
-el("run").onclick=()=>{
-const cases=[
-"Operação normal demonstrativa.",
-"Temperatura elevada: alerta fictício.",
-"Luminosidade reduzida: cenário demonstrativo.",
-"Dados meteorológicos indisponíveis na simulação.",
-"Evento experimental de segurança simulado.",
-"Recuperação demonstrativa do estado nominal."
-];
-const msg=cases[Math.floor(Math.random()*cases.length)];
-log(msg);alert(msg+"\n\nEste é apenas um cenário fictício.");
-};
-el("scene").onclick=e=>{
-const r=el("scene").getBoundingClientRect(),w=r.width,h=r.height;
-const cx=w/2,cy=h*.46,dx=Math.min(w*.31,155),dy=Math.min(h*.19,68);
-const pos=[[cx-dx*.5,cy-dy*.35],[cx+dx*.5,cy-dy*.35],[cx-dx*.5,cy+dy*.35],[cx+dx*.5,cy+dy*.35],[cx-dx*.5,cy+dy*.95],[cx+dx*.5,cy+dy*.95]];
-let best=Infinity,idx=0;
-pos.forEach((p,i)=>{const dist=(p[0]-(e.clientX-r.left))**2+(p[1]-(e.clientY-r.top))**2;if(dist<best){best=dist;idx=i}});
-if(best<Math.max(55,w*.08)**2)select(idx);
-};
-window.addEventListener("resize",draw);
-renderZones();select(0);
+
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => {
+    navigate(button.dataset.go);
+  });
+});
+
+/* Controles */
+
+$("light").addEventListener("input", event => {
+  state.light = Number(event.target.value);
+  render();
+});
+
+$("transmission").addEventListener("input", event => {
+  state.transmission = Number(event.target.value);
+  render();
+});
+
+$("temperature").addEventListener("input", event => {
+  state.temperature = Number(event.target.value);
+  render();
+});
+
+$("humidity").addEventListener("input", event => {
+  state.humidity = Number(event.target.value);
+  render();
+});
+
+$("lightLimit").addEventListener("input", event => {
+  state.lightLimit = Number(event.target.value);
+  render();
+});
+
+$("tempLimit").addEventListener("input", event => {
+  state.tempLimit = Number(event.target.value);
+  render();
+});
+
+$("openShutter").addEventListener("click", () => {
+  if (state.light > state.lightLimit ||
+      state.temperature > state.tempLimit) {
+    notify("Limite virtual excedido. Verifique os parâmetros.");
+    logEvent(
+      "Abertura virtual solicitada enquanto existe um alerta.",
+      "warning"
+    );
+    return;
+  }
+
+  if (state.shutter !== "ABERTO") {
+    changeShutter("ABERTO");
+  } else {
+    notify("O obturador virtual já está aberto.");
+  }
+});
+
+$("closeShutter").addEventListener("click", () => {
+  if (state.shutter !== "FECHADO") {
+    changeShutter("FECHADO");
+  } else {
+    notify("O obturador virtual já está fechado.");
+  }
+});
+
+$("clearEvents").addEventListener("click", () => {
+  eventsData.length = 0;
+  renderEvents();
+  notify("Histórico de eventos limpo.");
+});
+
+$("resetBtn").addEventListener("click", () => {
+  Object.assign(state, defaults);
+
+  historyData.length = 0;
+  eventsData.length = 0;
+
+  render();
+  sampleHistory();
+
+  logEvent("Simulação reiniciada com os parâmetros padrão.");
+  notify("Parâmetros virtuais reiniciados.");
+});
+
+/* Inicialização */
+
+render();
+
+sampleHistory();
+
+logEvent("SSN Virtual Facility 2.0 inicializado.");
+logEvent("Sensores e atuadores operam apenas em simulação.");
+
+window.addEventListener("resize", () => {
+  setTimeout(drawChart, 100);
+});
+
+/* Atualização periódica do histórico, sem alterar os valores. */
+
+setInterval(sampleHistory, 5000);
 </script>
+
 </body>
 </html>
