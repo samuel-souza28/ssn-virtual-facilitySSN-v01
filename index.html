@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSN Virtual Facility 0.1</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101720;color:#edf5fc;font-family:Arial,sans-serif}
+header{padding:18px;background:#172432;border-bottom:1px solid #405365}
+h1{font-size:22px;margin:0 0 8px}
+p{line-height:1.5}
+.sub{color:#b5c8d8;font-size:13px;margin:0}
+.badge{display:inline-block;background:#57451c;color:#ffe4a3;padding:7px;margin-top:12px;border-radius:5px;font-size:11px}
+main{max-width:1000px;margin:auto;padding:14px}
+h2{font-size:17px;margin:22px 0 12px}
+#scene{width:100%;height:310px;display:block;background:#1a2b38;border:1px solid #435969;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+button{background:#1c2d3c;color:#fff;border:1px solid #496174;padding:12px;border-radius:8px;text-align:left;cursor:pointer}
+button.active{border-color:#82d7ff;background:#2a4558}
+button strong{display:block;color:#8cddff;margin-bottom:5px;font-size:12px}
+#panel{margin-top:14px;background:#172432;border:1px solid #405365;border-radius:10px;padding:14px}
+#title{font-size:18px;margin:0}
+#desc{color:#bdcddb;font-size:13px}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.metric{background:#0f1b25;padding:12px;border-radius:6px;overflow-wrap:anywhere}
+.metric small{display:block;color:#9eb4c6;margin-bottom:7px}
+.metric strong{font-size:15px}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{flex:1;text-align:center}
+#events{font-size:12px;color:#c5d4df;line-height:1.8;overflow-wrap:anywhere}
+footer{text-align:center;padding:22px;color:#91a7b8;font-size:11px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}#scene{height:430px}}
+</style>
+</head>
+<body>
+<header>
+<h1>☀️ SSN Virtual Facility</h1>
+<p class="sub">Sistema Solar Nordeste | Versão 0.1</p>
+<span class="badge">SIMULAÇÃO VIRTUAL — SEM CONTROLE FÍSICO</span>
+</header>
+<main>
+<h2>🏭 Galpão industrial virtual</h2>
+<canvas id="scene"></canvas>
+<p class="sub">Representação conceitual. Selecione uma zona para consultar seus parâmetros.</p>
+
+<h2>📍 Subsistemas SSN</h2>
+<div class="grid" id="zones"></div>
+
+<section id="panel">
+<h3 id="title">SSN-SOLAR</h3>
+<p id="desc"></p>
+<div class="metrics" id="metrics"></div>
+<div class="actions">
+<button id="run">▶ Simular cenário</button>
+<button id="record">＋ Registrar evento</button>
+</div>
+</section>
+
+<h2>📋 Histórico de eventos</h2>
+<div id="events">Nenhum evento registrado nesta sessão.</div>
+</main>
+<footer>
+SSN Virtual Facility 0.1<br>
+Dados fictícios para experimentação. Não controla equipamentos reais e não substitui sistemas certificados de segurança.
+</footer>
+
+<script>
+const zones=[
+{id:"SSN-SOLAR",name:"Captação solar",desc:"Área conceitual de painéis e captação de energia.",m:[["Irradiância","720 W/m²"],["Painéis virtuais","12"],["Produção","Simulada"]]},
+{id:"SSN-OPTICAL",name:"Sistema óptico",desc:"Tubos de luz e componentes ópticos conceituais.",m:[["Luminosidade","68%"],["Filtro UV","Conceitual"],["Obturador","Virtual"]]},
+{id:"SSN-ENVIRONMENT",name:"Ambiente",desc:"Ambiente experimental com parâmetros fictícios.",m:[["Temperatura","27 °C"],["Umidade","55%"],["Estado","Normal simulado"]]},
+{id:"SSN-WEATHER",name:"Meteorologia",desc:"Estação demonstrativa sem conexão com serviços meteorológicos.",m:[["Condição","Simulada"],["Vento","12 km/h fictícios"],["Dados reais","Desconectados"]]},
+{id:"SSN-SAFE",name:"Segurança experimental",desc:"Demonstração de alertas por software, sem proteção física real.",m:[["Alertas","0"],["Intertravamento","Simulado"],["Proteção certificada","Não disponível"]]},
+{id:"SSN-CONTROL",name:"Centro de controle",desc:"Painel conceitual de monitoramento e registro.",m:[["Zonas virtuais","6"],["Integrações","Nenhuma"],["Histórico","Da sessão"]]}
+];
+let selected=0,events=[];
+const el=id=>document.getElementById(id);
+function draw(){
+const c=el("scene"),r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);
+c.width=r.width*d;c.height=r.height*d;
+const x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);
+const w=r.width,h=r.height,cx=w/2,cy=h*.46,dx=Math.min(w*.31,155),dy=Math.min(h*.19,68);
+x.clearRect(0,0,w,h);x.fillStyle="#1a2b38";x.fillRect(0,0,w,h);
+function poly(p,color){
+x.beginPath();p.forEach((v,i)=>i?x.lineTo(...v):x.moveTo(...v));
+x.closePath();x.fillStyle=color;x.fill();x.strokeStyle="#7893a5";x.stroke();
+}
+poly([[cx,cy-dy*1.5],[cx+dx,cy-dy*.5],[cx,cy+dy*.5],[cx-dx,cy-dy*.5]],"#354c5b");
+poly([[cx-dx,cy-dy*.5],[cx,cy+dy*.5],[cx,cy+dy*1.45],[cx-dx,cy+dy*.45]],"#263b49");
+poly([[cx,cy+dy*.5],[cx+dx,cy-dy*.5],[cx+dx,cy+dy*.45],[cx,cy+dy*1.45]],"#203441");
+const pos=[[cx-dx*.5,cy-dy*.35],[cx+dx*.5,cy-dy*.35],[cx-dx*.5,cy+dy*.35],[cx+dx*.5,cy+dy*.35],[cx-dx*.5,cy+dy*.95],[cx+dx*.5,cy+dy*.95]];
+const colors=["#347c9b","#5a72a4","#8c7040","#427b65","#a14f4f","#6b638e"];
+pos.forEach((p,i)=>{
+const [a,b]=p,ww=Math.min(w*.25,dx*.72),hh=dy*.43;
+poly([[a-ww/2,b-hh/2],[a,b-hh*.85],[a+ww/2,b-hh/2],[a,b+hh*.05]],i===selected?"#9de3ff":colors[i]);
+poly([[a-ww/2,b-hh/2],[a,b+hh*.05],[a,b+hh*.75],[a-ww/2,b+hh*.15]],colors[i]);
+poly([[a,b+hh*.05],[a+ww/2,b-hh/2],[a+ww/2,b+hh*.15],[a,b+hh*.75]],i===selected?"#4289ad":"#2b414f");
+x.fillStyle="white";x.textAlign="center";x.font="bold 10px Arial";
+x.fillText(zones[i].id.replace("SSN-",""),a,b+4);
+});
+x.fillStyle="#c0d4e1";x.textAlign="left";x.font="11px Arial";x.fillText("GALPÃO CONCEITUAL",10,18);
+}
+function renderZones(){
+el("zones").innerHTML=zones.map((z,i)=>`<button class="${i===selected?"active":""}" data-i="${i}"><strong>${z.id}</strong>${z.name}</button>`).join("");
+document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>select(+b.dataset.i));
+}
+function select(i){
+selected=i;const z=zones[i];
+el("title").textContent=z.id+" — "+z.name;
+el("desc").textContent=z.desc;
+el("metrics").innerHTML=z.m.map(v=>`<div class="metric"><small>${v[0]}</small><strong>${v[1]}</strong></div>`).join("");
+renderZones();draw();
+}
+function log(msg){
+events.unshift(new Date().toLocaleTimeString("pt-BR")+" — "+msg);
+el("events").innerHTML=events.slice(0,20).map(v=>"• "+v).join("<br>");
+}
+el("record").onclick=()=>log("Inspeção manual: "+zones[selected].id);
+el("run").onclick=()=>{
+const cases=[
+"Operação normal demonstrativa.",
+"Temperatura elevada: alerta fictício.",
+"Luminosidade reduzida: cenário demonstrativo.",
+"Dados meteorológicos indisponíveis na simulação.",
+"Evento experimental de segurança simulado.",
+"Recuperação demonstrativa do estado nominal."
+];
+const msg=cases[Math.floor(Math.random()*cases.length)];
+log(msg);alert(msg+"\n\nEste é apenas um cenário fictício.");
+};
+el("scene").onclick=e=>{
+const r=el("scene").getBoundingClientRect(),w=r.width,h=r.height;
+const cx=w/2,cy=h*.46,dx=Math.min(w*.31,155),dy=Math.min(h*.19,68);
+const pos=[[cx-dx*.5,cy-dy*.35],[cx+dx*.5,cy-dy*.35],[cx-dx*.5,cy+dy*.35],[cx+dx*.5,cy+dy*.35],[cx-dx*.5,cy+dy*.95],[cx+dx*.5,cy+dy*.95]];
+let best=Infinity,idx=0;
+pos.forEach((p,i)=>{const dist=(p[0]-(e.clientX-r.left))**2+(p[1]-(e.clientY-r.top))**2;if(dist<best){best=dist;idx=i}});
+if(best<Math.max(55,w*.08)**2)select(idx);
+};
+window.addEventListener("resize",draw);
+renderZones();select(0);
+</script>
+</body>
+</html>
